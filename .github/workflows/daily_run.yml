@@ -1,0 +1,47 @@
+name: NBA Daily Automation
+
+# 1. The Schedule (6:00 AM CST / 12:00 PM UTC)
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch: # This adds a button so you can manually test it anytime
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step A: Download your code from the repository
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step B: Install Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Step C: Install the required tools
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      # Step D: Run the Ingestion Script
+      - name: Pull Daily NBA Data
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python daily_ingestion.py
+
+      # Step E: Run the Consistency Model
+      - name: Calculate Consistency & Generate Plots
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python consistency_model.py
+
+    # Step F: Save the new outputs back to GitHub (Only if changes exist)
+      - name: Commit and Push Outputs
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git add Outputs/
+          # This command checks if there are new changes before trying to commit and push
+          git diff-index --quiet HEAD || (git commit -m "Automated daily model update" && git push)

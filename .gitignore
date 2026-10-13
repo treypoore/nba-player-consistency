@@ -1,0 +1,29 @@
+# Secrets & private config
+.env
+.env.*
+config_private.py
+_private/
+
+# Data files
+Original Data/
+Cleaned Data/
+*.csv
+*.parquet
+*.db
+*.sqlite
+
+# Model outputs: ignored except one sample plot
+Outputs/*
+!Outputs/Plots/
+Outputs/Plots/*
+!Outputs/Plots/pts_consistency_archetypes_top50_cloud.png
+
+# Environment, tooling & OS clutter
+.venv/
+__pycache__/
+claude.md
+.DS_Store
+~$*
+
+# Documentation (kept locally, not published)
+Documentation/

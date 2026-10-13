@@ -1,0 +1,7 @@
+pandas
+nba_api
+sqlalchemy
+psycopg[binary]
+python-dotenv
+matplotlib
+numpy
